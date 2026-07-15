@@ -1,0 +1,11 @@
+{
+  "name": "LAB.AI",
+  "short_name": "LAB.AI",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "description": "A luxury AI learning web app for electronics and Arduino projects.",
+  "orientation": "portrait"
+}

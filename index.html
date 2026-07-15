@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050816" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>LAB.AI</title>
+  <style>
+    :root {
+      --bg: #050816;
+      --panel: rgba(255,255,255,0.14);
+      --accent: #7c3aed;
+      --accent2: #22d3ee;
+      --accent3: #f59e0b;
+      --text: #f8fafc;
+      --muted: #dbe4f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,58,237,0.32), transparent 20%),
+        radial-gradient(circle at 90% 0%, rgba(34,211,238,0.24), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(245,158,11,0.2), transparent 28%),
+        linear-gradient(135deg, #020617 0%, #0a1024 42%, #111827 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 340px;
+      height: 340px;
+      border-radius: 999px;
+      filter: blur(70px);
+      opacity: 0.45;
+      z-index: 0;
+      pointer-events: none;
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      top: -80px;
+      left: -90px;
+      background: rgba(124,58,237,0.34);
+    }
+
+    body::after {
+      bottom: -100px;
+      right: -70px;
+      background: rgba(34,211,238,0.26);
+      animation-duration: 12s;
+    }
+
+    .wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero, .card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 26px;
+      box-shadow: 0 26px 70px rgba(2, 8, 23, 0.34), inset 0 1px 0 rgba(255,255,255,0.24);
+    }
+
+    .hero::before,
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.16), transparent 40%, rgba(255,255,255,0.08));
+      pointer-events: none;
+    }
+
+    .hero {
+      padding: 30px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2.1rem;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, #f8fafc 0%, #c4b5fd 30%, #67e8f9 65%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 780px;
+      font-size: 1rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .chip, button {
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(255,255,255,0.1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 22px rgba(2, 6, 23, 0.22);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .chip:hover, button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(124,58,237,0.32), rgba(34,211,238,0.25), rgba(245,158,11,0.2));
+      box-shadow: 0 16px 30px rgba(2, 6, 23, 0.28);
+    }
+
+    .run-btn {
+      background: linear-gradient(135deg, rgba(124,58,237,0.96), rgba(34,211,238,0.9), rgba(245,158,11,0.82));
+      color: #03111d;
+      border: none;
+    }
+
+    input {
+      flex: 1;
+      min-width: 260px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 14px;
+      padding: 13px 15px;
+      background: rgba(7, 17, 31, 0.56);
+      color: var(--text);
+      box-shadow: inset 0 2px 12px rgba(2, 6, 23, 0.32);
+      backdrop-filter: blur(10px);
+    }
+
+    input::placeholder { color: #94a3b8; }
+
+    .grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .card { padding: 22px; }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(124,58,237,0.16);
+      border: 1px solid rgba(124,58,237,0.24);
+      color: #c4b5fd;
+      margin-bottom: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    ul { padding-left: 18px; line-height: 1.8; }
+    li { color: var(--muted); }
+    strong { color: var(--text); }
+
+    .scene {
+      height: 320px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(11, 23, 40, 0.82));
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.16);
+      margin-top: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 20px 45px rgba(2, 6, 23, 0.28);
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(94,234,212,0.16), transparent 36%), radial-gradient(circle at bottom right, rgba(96,165,250,0.16), transparent 32%);
+      pointer-events: none;
+    }
+
+    .board {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 180px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(15, 23, 42, 0.9));
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 20px 42px rgba(2,6,23,0.35), inset 0 1px 0 rgba(255,255,255,0.16);
+      z-index: 0;
+    }
+    .board::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,0,0,0.18));
+    }
+    .board .chip {
+      position: absolute;
+      left: 72px;
+      top: 52px;
+      width: 90px;
+      height: 54px;
+      background: linear-gradient(145deg, #f59e0b, #92400e);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.24);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+    }
+    .board .chip::after { content: 'ATmega328'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.7rem; font-weight: 700; color: white; }
+    .board .usb {
+      position: absolute;
+      right: 42px;
+      top: 58px;
+      width: 44px;
+      height: 28px;
+      border-radius: 8px;
+      background: #111827;
+      border: 2px solid #4b5563;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .board .usb::before { content: ''; position: absolute; left: 10px; top: 7px; width: 20px; height: 12px; border-radius: 6px; border: 2px solid #9ca3af; }
+    .board .pin-row { position: absolute; display: flex; gap: 6px; }
+    .board .pin-row.left { left: 24px; bottom: 26px; }
+    .board .pin-row.right { right: 24px; bottom: 26px; }
+    .board .pin { width: 8px; height: 22px; border-radius: 999px; background: linear-gradient(180deg, #94a3b8, #475569); border: 1px solid rgba(255,255,255,0.18); }
+    .board .label { position: absolute; font-size: 0.7rem; color: #e2e8f0; letter-spacing: 0.08em; text-transform: uppercase; }
+    .board .label.top { left: 24px; top: 18px; }
+    .board .label.bottom { left: 24px; bottom: 7px; }
+
+    .model-item {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
+      cursor: grab;
+      user-select: none;
+      z-index: 2;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .model-item.dragging { cursor: grabbing; transform: scale(1.04); }
+    .model-item.connected { border-color: #8b5cf6; box-shadow: 0 0 0 2px rgba(124,58,237,0.2), 0 10px 24px rgba(0,0,0,0.22); }
+    .model-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .model-item span { position: absolute; bottom: 4px; left: 4px; font-size: 0.68rem; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.8); background: rgba(0,0,0,0.45); padding: 2px 5px; border-radius: 999px; }
+    .connection-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .wire-node { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #f59e0b; border: 2px solid white; z-index: 3; }
+
+    .breadboard {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 110px;
+      background: linear-gradient(180deg, #fef3c7, #fde68a);
+      border-radius: 14px;
+      border: 1px solid rgba(146, 64, 14, 0.85);
+      box-shadow: inset 0 0 0 6px #f59e0b, 0 10px 20px rgba(0,0,0,0.18);
+      z-index: 0;
+    }
+    .breadboard::before { content: ''; position: absolute; inset: 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.16); background: repeating-linear-gradient(90deg, #fbbf24 0 4px, #f59e0b 4px 8px); opacity: 0.7; }
+    .breadboard::after { content: 'Power rails'; position: absolute; left: 12px; top: 8px; font-size: 0.68rem; color: #7c2d12; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .component-tray {
+      position: absolute;
+      left: 18px;
+      top: 28px;
+      width: 96px;
+      height: 120px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(15,23,42,0.65));
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 10px 20px rgba(0,0,0,0.16);
+      z-index: 0;
+    }
+    .component-tray::before { content: 'Parts tray'; position: absolute; top: 8px; left: 8px; font-size: 0.7rem; color: #e2e8f0; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .rail { position: absolute; width: 70px; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #ef4444, #fca5a5); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .rail.gnd { left: 24px; top: 26px; background: linear-gradient(90deg, #3b82f6, #67e8f9); }
+    .rail.vcc { left: 24px; top: 44px; background: linear-gradient(90deg, #22c55e, #86efac); }
+    .wire { position: absolute; height: 4px; border-radius: 999px; transform-origin: left center; z-index: 2; box-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+    .wire.red { background: #ef4444; }
+    .wire.blue { background: #3b82f6; }
+    .wire.green { background: #22c55e; }
+    .wire.yellow { background: #facc15; }
+
+    .model-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .legend-pill { display: inline-block; padding: 6px 8px; border-radius: 999px; background: rgba(124,58,237,0.14); color: #c4b5fd; border: 1px solid rgba(124,58,237,0.24); font-size: 0.8rem; }
+    .tiny { color: var(--muted); font-size: 0.95rem; }
+    .ai-box { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); }
+    .ghost-btn { background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid rgba(255,255,255,0.12); }
+    .model-status { margin-top: 8px; color: var(--accent); font-size: 0.92rem; min-height: 1.2rem; }
+    .connection-help { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+    .connection-help h4 { margin: 0 0 8px; font-size: 0.95rem; color: var(--accent); }
+    .connection-help ul { margin: 0; padding-left: 16px; }
+    .connection-help li { margin-bottom: 4px; }
+
+    .scene.running .board { animation: pulse 0.9s infinite; }
+    .scene.running .sensor { animation: scan 1s infinite linear; }
+    .scene.running .servo { animation: swing 1s infinite ease-in-out; }
+    .scene.running .led { animation: blink 0.7s infinite; }
+    .scene.running .pump { animation: pump 0.8s infinite; }
+    .scene.running .screen { animation: glow 1s infinite alternate; }
+    .scene.running .buzzer { animation: buzz 0.3s infinite; }
+
+    @keyframes pulse { 0%,100% { transform: translate(-50%, -50%) scale(1) rotateX(18deg); } 50% { transform: translate(-50%, -50%) scale(1.03) rotateX(18deg); } }
+    @keyframes scan { 0% { transform: rotate(-12deg) translateX(0); } 50% { transform: rotate(12deg) translateX(10px); } 100% { transform: rotate(-12deg) translateX(0); } }
+    @keyframes swing { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(20deg); } }
+    @keyframes blink { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+    @keyframes pump { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes glow { from { box-shadow: 0 0 0 #fde68a; } to { box-shadow: 0 0 18px #fde68a; } }
+    @keyframes buzz { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(30px,-24px,0) scale(1.06); } }
+
+    .intro-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .intro-card {
+      width: min(940px, 100%);
+      padding: 38px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 30px 80px rgba(2, 8, 23, 0.38), inset 0 1px 0 rgba(255,255,255,0.24);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro-card::before,
+    .intro-card::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      width: 200px;
+      height: 200px;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .intro-card::before { top: -60px; right: -40px; background: rgba(124,58,237,0.3); }
+    .intro-card::after { bottom: -40px; left: -30px; background: rgba(34,211,238,0.24); }
+
+    .intro-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e0f2fe;
+      background: linear-gradient(120deg, rgba(124,58,237,0.2), rgba(34,211,238,0.16));
+      border: 1px solid rgba(255,255,255,0.18);
+      margin-bottom: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 20px rgba(2,8,23,0.16);
+    }
+
+    .intro-badge::before {
+      content: "◉";
+      color: #67e8f9;
+      font-size: 0.9rem;
+    }
+
+    .hero-title-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      animation: floatTitle 3.4s ease-in-out infinite;
+    }
+
+    .hero-title-wrap h1 {
+      font-size: clamp(2.8rem, 6vw, 4.3rem);
+      margin: 0;
+      display: inline-block;
+      text-shadow: 0 8px 24px rgba(124,58,237,0.18);
+      letter-spacing: 0.04em;
+    }
+
+    .intro-lead {
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.75;
+      max-width: 760px;
+      margin-bottom: 18px;
+    }
+
+    .safe-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, rgba(124,58,237,0.18), rgba(34,211,238,0.14));
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #dcfce7;
+      font-weight: 700;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(2,8,23,0.16);
+    }
+
+    .safe-pill::before {
+      content: "✓";
+      color: #34d399;
+      font-size: 0.95rem;
+    }
+
+    .intro-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 18px 0 24px;
+    }
+
+    .intro-block {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .intro-block h3 { margin: 0 0 8px; color: #f8fafc; }
+    .intro-block p, .intro-block li { color: #cbd5e1; }
+
+    .liquid-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 22px;
+      min-width: 240px;
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #04131d;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(94,234,212,0.96), rgba(96,165,250,0.92), rgba(167,139,250,0.94));
+      box-shadow: 0 24px 46px rgba(124,58,237,0.3), inset 0 2px 0 rgba(255,255,255,0.28);
+      overflow: hidden;
+      isolation: isolate;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: bobButton 1.8s ease-in-out infinite;
+    }
+
+    .liquid-btn:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 28px 56px rgba(124,58,237,0.34), inset 0 2px 0 rgba(255,255,255,0.3);
+    }
+
+    .liquid-btn::before,
+    .liquid-btn::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, rgba(255,255,255,0.6), transparent 35%, rgba(255,255,255,0.2));
+      transform: translateX(-110%);
+      animation: sweep 2.8s linear infinite;
+      z-index: -1;
+    }
+
+    .liquid-btn::after {
+      animation-delay: 1.2s;
+      opacity: 0.7;
+    }
+
+    .app-shell {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .app-shell.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(28px);
+      height: 0;
+      overflow: hidden;
+    }
+
+    .ceo-line {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #f8fafc;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, rgba(124,58,237,0.16), rgba(34,211,238,0.12));
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 8px 18px rgba(2,8,23,0.15);
+      animation: floatCEO 3.6s ease-in-out infinite;
+    }
+
+    .ceo-line::before {
+      content: "🧠";
+      font-size: 0.95rem;
+    }
+
+    .corner-note {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      z-index: 5;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(10, 16, 36, 0.86);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fef3c7;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(2, 8, 23, 0.24);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      max-width: 240px;
+      line-height: 1.45;
+    }
+
+    .page-footer {
+      padding: 24px 20px 36px;
+      text-align: center;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .page-footer a {
+      color: #c4b5fd;
+      text-decoration: none;
+      margin: 0 8px;
+      font-weight: 600;
+    }
+
+    .page-footer a:hover {
+      color: #67e8f9;
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(140%); }
+    }
+
+    @keyframes floatTitle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes floatCEO {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes bobButton {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes spinChip {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .intro-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="introScreen" class="intro-screen">
+    <div class="intro-card">
+      <div class="intro-badge">AI Learning Lab • Student Electronics Studio</div>
+      <div class="hero-title-wrap">
+        <h1>LAB.AI</h1>
+      </div>
+      <div class="safe-pill">100% Safe Learning</div>
+      <p class="intro-lead">This website is a smart learning experience for students who want to understand electronics projects, component wiring, step-by-step guides, and Arduino or ESP32 coding in a clear and interactive way.</p>
+      <p class="intro-lead" style="margin-top: 8px; color: #fde68a; font-weight: 700;">(This AI may make some mistake)</p>
+      <div class="safe-pill">Step-by-step learning • Safe and guided</div>
+      <div class="intro-grid">
+        <div class="intro-block">
+          <h3>What this website does</h3>
+          <p>It helps students explore projects like radar, smart plant systems, traffic lights, temperature monitors, robot arms, and Bluetooth control projects.</p>
+        </div>
+        <div class="intro-block">
+          <h3>What you will learn</h3>
+          <ul>
+            <li>Which components you need</li>
+            <li>How to wire everything correctly</li>
+            <li>How to build the project step by step</li>
+            <li>How to upload and test the code</li>
+          </ul>
+        </div>
+      </div>
+      <button id="startBtn" class="liquid-btn">Start the experience</button>
+      <p class="ceo-line">CEO • A. Chushil Fabian</p>
+    </div>
+  </div>
+
+  <div id="appShell" class="app-shell hidden">
+    <div class="corner-note">LAB.AI may make mistakes. Please double-check the wiring and steps before building.</div>
+    <div class="wrap">
+      <section class="hero">
+      <h1>LAB.AI</h1>
+      <p class="lead">Tell LAB.AI the project you want. It will suggest the components, explain the practical steps, and show a 3D-style model in the web page.</p>
+      <div class="row">
+        <button class="chip" data-project="radar">Radar</button>
+        <button class="chip" data-project="smart plant">Smart Plant</button>
+        <button class="chip" data-project="traffic light">Traffic Light</button>
+        <button class="chip" data-project="temperature monitor">Temperature Monitor</button>
+        <button class="chip" data-project="robot arm">Robot Arm</button>
+        <button class="chip" data-project="esp32 bluetooth">ESP32 Bluetooth</button>
+      </div>
+      <div class="row">
+        <input id="projectInput" type="text" placeholder="Describe any project, for example: a smart plant or robot arm" />
+        <button id="generateBtn">Ask AI</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div id="lessonResult"></div>
+        <div id="aiReply" class="ai-box"></div>
+      </div>
+      <div class="card">
+        <h3>3D model preview</h3>
+        <div class="row">
+          <button id="runBtn" class="run-btn">Run project</button>
+          <button id="resetBtn" class="ghost-btn">Reset layout</button>
+          <button id="testBtn" class="ghost-btn">Test connections</button>
+        </div>
+        <div id="modelScene" class="scene" aria-label="Arduino project model preview"></div>
+        <div id="modelLegend" class="model-legend"></div>
+        <div id="modelStatus" class="model-status">Drag the parts onto the board and connect them.</div>
+        <div id="connectionHelp" class="connection-help"></div>
+        <p class="tiny">The 3D-style model now shows the main controller and the parts the AI selected, so students can connect the real hardware more easily.</p>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <a href="/terms.html">Terms & Conditions</a>
+    <span>•</span>
+    <a href="/privacy.html">Privacy Policy</a>
+    <span>•</span>
+    <a href="/index.html">Back to Home</a>
+  </footer>
+
+  <script>
+    const projects = {
+      radar: {
+        title: 'Radar Project',
+        intro: 'A simple Arduino radar uses an ultrasonic sensor and a servo motor to scan the area.',
+        components: [
+          'Arduino Uno - main control board',
+          'HC-SR04 ultrasonic sensor - detects objects',
+          'Servo motor - rotates the sensor',
+          'Buzzer and LED - alert signals',
+          'Breadboard and jumper wires - connections'
+        ],
+        connections: [
+          'Ultrasonic VCC -> Arduino 5V',
+          'Ultrasonic GND -> Arduino GND',
+          'Ultrasonic TRIG -> Arduino pin 9',
+          'Ultrasonic ECHO -> Arduino pin 10',
+          'Servo VCC -> Arduino 5V',
+          'Servo GND -> Arduino GND',
+          'Servo signal -> Arduino pin 8',
+          'Buzzer positive -> Arduino pin 7',
+          'LED anode -> Arduino pin 13 through 220Ω resistor'
+        ],
+        wires: [
+          'Male-to-male jumper wires - for breadboard and Arduino pin connections',
+          'Female-to-male jumper wires - for the ultrasonic sensor pins',
+          '220Ω resistor - for the LED' 
+        ],
+        steps: [
+          'Step 1: Place the Arduino and breadboard on the desk.',
+          'Step 2: Connect the ultrasonic sensor to the breadboard and Arduino.',
+          'Step 3: Attach the servo motor and connect its power and signal pin.',
+          'Step 4: Add the buzzer and LED for alerts.',
+          'Step 5: Upload the code and test the scanning movement.'
+        ],
+        guide: [
+          'Power the breadboard from the Arduino 5V and GND rails.',
+          'Connect the ultrasonic sensor pins carefully and double-check the labels.',
+          'Attach the servo to the mounting point and connect the signal wire to pin 8.',
+          'Place the buzzer and LED so you can hear and see alerts.',
+          'Upload the code, then open the serial monitor to test the scan.'
+        ],
+        code: `const int trigPin = 9;\nconst int echoPin = 10;\nconst int servoPin = 8;\nconst int buzzerPin = 7;\nconst int ledPin = 13;\n\nvoid setup() {\n  pinMode(trigPin, OUTPUT);\n  pinMode(echoPin, INPUT);\n  pinMode(servoPin, OUTPUT);\n  pinMode(buzzerPin, OUTPUT);\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n\n  long duration = pulseIn(echoPin, HIGH);\n  int distance = duration * 0.034 / 2;\n\n  Serial.print("Distance: ");\n  Serial.println(distance);\n\n  if (distance < 30) {\n    digitalWrite(buzzerPin, HIGH);\n    digitalWrite(ledPin, HIGH);\n  } else {\n    digitalWrite(buzzerPin, LOW);\n    digitalWrite(ledPin, LOW);\n  }\n\n  delay(500);\n}`,
+        ai: 'I can help you build a radar by using an ultrasonic sensor and servo. The sensor scans the area while the servo turns left and right.',
+        model: ['board', 'sensor', 'servo', 'led']
+      },
+      'smart plant': {
+        title: 'Smart Plant Project',
+        intro: 'This project checks soil moisture and waters a plant automatically.',
+        components: [
+          'Arduino Uno - main control board',
+          'Soil moisture sensor - measures water level',
+          'Water pump - moves water',
+          'Relay module - controls the pump',
+          'LED indicator - shows the status'
+        ],
+        connections: [
+          'Soil sensor VCC -> Arduino 5V',
+          'Soil sensor GND -> Arduino GND',
+          'Soil sensor SIG -> Arduino A0',
+          'Relay IN -> Arduino pin 6',
+          'Pump positive -> relay output',
+          'Pump negative -> external power negative',
+          'LED anode -> Arduino pin 13 through 220Ω resistor'
+        ],
+        wires: [
+          'Male-to-male jumper wires - for the Arduino and breadboard',
+          'Female-to-male jumper wires - for the sensor module',
+          'Relay wire set - for pump control'
+        ],
+        steps: [
+          'Step 1: Put the soil sensor into the soil.',
+          'Step 2: Connect the relay and pump.',
+          'Step 3: Add an LED to show the moisture status.',
+          'Step 4: Upload the code and test the watering system.'
+        ],
+        guide: [
+          'Use the analog pin A0 to read moisture values from the sensor.',
+          'Keep the pump and relay on a separate power source if needed.',
+          'Make sure the relay ground and Arduino ground are connected together.',
+          'Test the sensor reading before powering the water pump.'
+        ],
+        code: `const int moisturePin = A0;\nconst int relayPin = 6;\nconst int ledPin = 13;\n\nvoid setup() {\n  pinMode(relayPin, OUTPUT);\n  pinMode(ledPin, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int moisture = analogRead(moisturePin);\n  Serial.println(moisture);\n\n  if (moisture < 400) {\n    digitalWrite(relayPin, HIGH);\n    digitalWrite(ledPin, HIGH);\n  } else {\n    digitalWrite(relayPin, LOW);\n    digitalWrite(ledPin, LOW);\n  }\n\n  delay(1000);\n}`,
+        ai: 'This smart plant system uses a moisture sensor and pump to water the plant when the soil is dry.',
+        model: ['board', 'sensor', 'pump', 'led']
+      },
+      'traffic light': {
+        title: 'Traffic Light Project',
+        intro: 'This lesson teaches students how to control LED lights like a traffic signal.',
+        components: [
+          'Arduino Uno - main control board',
+          'Red, yellow, and green LEDs - signals',
+          'Resistors - protect the LEDs',
+          'Breadboard - circuit base',
+          'Jumper wires - connections'
+        ],
+        connections: [
+          'Red LED cathode -> GND through 220Ω resistor',
+          'Red LED anode -> Arduino pin 10',
+          'Yellow LED cathode -> GND through 220Ω resistor',
+          'Yellow LED anode -> Arduino pin 9',
+          'Green LED cathode -> GND through 220Ω resistor',
+          'Green LED anode -> Arduino pin 8'
+        ],
+        wires: [
+          '220Ω resistors - one for each LED',
+          'Male-to-male jumper wires - for LED connections',
+          'Short jumper wires - to keep the layout neat'
+        ],
+        steps: [
+          'Step 1: Place the LEDs on the breadboard.',
+          'Step 2: Connect each LED with a resistor.',
+          'Step 3: Wire the LEDs to digital pins.',
+          'Step 4: Upload a simple blinking sequence.'
+        ],
+        guide: [
+          'Connect the long LED leg to the positive side and the short leg to the negative side.',
+          'Use one resistor per LED to protect the component.',
+          'Check the pin numbers in your code before uploading it.',
+          'Test the sequence slowly at first so students can understand it.'
+        ],
+        code: `const int redPin = 10;\nconst int yellowPin = 9;\nconst int greenPin = 8;\n\nvoid setup() {\n  pinMode(redPin, OUTPUT);\n  pinMode(yellowPin, OUTPUT);\n  pinMode(greenPin, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(greenPin, HIGH);\n  delay(3000);\n  digitalWrite(greenPin, LOW);\n\n  digitalWrite(yellowPin, HIGH);\n  delay(1000);\n  digitalWrite(yellowPin, LOW);\n\n  digitalWrite(redPin, HIGH);\n  delay(3000);\n  digitalWrite(redPin, LOW);\n}`,
+        ai: 'The traffic light project uses three LEDs and simple timing code to create a real signal pattern.',
+        model: ['board', 'light-red', 'light-yellow', 'light-green']
+      },
+      'temperature monitor': {
+        title: 'Temperature Monitor Project',
+        intro: 'Measure room temperature and view the result on the screen or monitor.',
+        components: [
+          'Arduino Uno - main control board',
+          'Temperature sensor - reads the temperature',
+          'LCD screen or serial monitor - displays values',
+          'Breadboard - circuit base',
+          'Jumper wires - connections'
+        ],
+        connections: [
+          'Temperature sensor VCC -> Arduino 5V',
+          'Temperature sensor GND -> Arduino GND',
+          'Temperature sensor OUT -> Arduino A0',
+          'LCD VCC -> 5V',
+          'LCD GND -> GND',
+          'LCD SDA -> A4',
+          'LCD SCL -> A5'
+        ],
+        wires: [
+          'Male-to-male jumper wires - for the sensor and screen',
+          'I2C cable - if your display uses I2C',
+          'Breadboard jumper wires - to keep the layout tidy'
+        ],
+        steps: [
+          'Step 1: Connect the sensor to the Arduino.',
+          'Step 2: Connect the display or serial monitor.',
+          'Step 3: Upload the code.',
+          'Step 4: Read the temperature values.'
+        ],
+        guide: [
+          'Use the analog pin A0 for a basic sensor reading.',
+          'If you use an LCD, check whether it is I2C or standard.',
+          'Double-check the sensor orientation before powering the circuit.',
+          'Open the serial monitor to see the temperature values.'
+        ],
+        code: `const int tempPin = A0;\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int reading = analogRead(tempPin);\n  float voltage = reading * 5.0 / 1023.0;\n  float temperature = voltage * 100.0;\n\n  Serial.print("Temperature: ");\n  Serial.print(temperature);\n  Serial.println(" C");\n  delay(1000);\n}`,
+        ai: 'The temperature monitor reads environmental temperature and shows the value clearly on a screen.',
+        model: ['board', 'sensor', 'screen']
+      },
+      'robot arm': {
+        title: 'Robot Arm Project',
+        intro: 'This project uses servo motors to move a small robotic arm.',
+        components: [
+          'Arduino Uno - main control board',
+          'Servo motors - control movement',
+          'Breadboard - circuit base',
+          'Jumper wires - connections',
+          'Small arm frame - mechanical structure'
+        ],
+        connections: [
+          'Servo 1 VCC -> Arduino 5V',
+          'Servo 1 GND -> Arduino GND',
+          'Servo 1 signal -> Arduino pin 9',
+          'Servo 2 VCC -> Arduino 5V',
+          'Servo 2 GND -> Arduino GND',
+          'Servo 2 signal -> Arduino pin 10'
+        ],
+        wires: [
+          'Male-to-male jumper wires - for servo power and signal',
+          'Power wires - for the arm frame',
+          'Small breadboard jumper set - for neat wiring'
+        ],
+        steps: [
+          'Step 1: Build the small arm frame.',
+          'Step 2: Connect the servo motors to the Arduino.',
+          'Step 3: Upload movement code.',
+          'Step 4: Test the arm motion carefully.'
+        ],
+        guide: [
+          'Use separate servo signal pins if you have more than one servo.',
+          'Do not force the arm movement when the servos are unpowered.',
+          'Test one servo at a time before connecting the full arm.',
+          'Keep the wiring neat so students can understand the circuit.'
+        ],
+        code: `#include <Servo.h>\n\nServo servo1;\nServo servo2;\n\nvoid setup() {\n  servo1.attach(9);\n  servo2.attach(10);\n  servo1.write(90);\n  servo2.write(90);\n}\n\nvoid loop() {\n  servo1.write(0);\n  delay(1000);\n  servo1.write(90);\n  delay(1000);\n  servo2.write(180);\n  delay(1000);\n  servo2.write(90);\n  delay(1000);\n}`,
+        ai: 'A robot arm project uses servos to move joints and can be programmed to follow simple instructions.',
+        model: ['board', 'servo', 'servo']
+      },
+      'esp32 bluetooth': {
+        title: 'ESP32 Bluetooth Project',
+        intro: 'Use an ESP32 with a Bluetooth module to build a wireless control project.',
+        components: [
+          'ESP32 DevKit - main wireless control board',
+          'HC-05 Bluetooth module - wireless communication',
+          'LED - visual output',
+          'Breadboard and jumper wires - connections',
+          'Resistor - protects the LED'
+        ],
+        connections: [
+          'Bluetooth VCC -> ESP32 3.3V',
+          'Bluetooth GND -> ESP32 GND',
+          'Bluetooth TX -> ESP32 RX2',
+          'Bluetooth RX -> ESP32 TX2',
+          'LED anode -> ESP32 GPIO 2 through 220Ω resistor',
+          'LED cathode -> GND'
+        ],
+        wires: [
+          'Male-to-male jumper wires - for the ESP32 and breadboard',
+          'Male-to-female jumper wires - for the Bluetooth module',
+          '220Ω resistor - for the LED'
+        ],
+        steps: [
+          'Step 1: Place the ESP32 and breadboard on the desk.',
+          'Step 2: Connect the Bluetooth module to the ESP32 pins.',
+          'Step 3: Add the LED and resistor to the output pin.',
+          'Step 4: Upload the code and pair the phone or laptop over Bluetooth.'
+        ],
+        guide: [
+          'Use the correct UART pins on the ESP32 for communication.',
+          'Make sure the Bluetooth module is powered from 3.3V and not 5V.',
+          'Open the Serial Monitor to see the Bluetooth messages.',
+          'Pair the device with the HC-05 module name from the phone settings.'
+        ],
+        code: `void setup() {\n  Serial.begin(115200);\n  Serial2.begin(9600);\n  pinMode(2, OUTPUT);\n}\n\nvoid loop() {\n  if (Serial2.available()) {\n    char c = Serial2.read();\n    Serial.write(c);\n    if (c == '1') {\n      digitalWrite(2, HIGH);\n    } else {\n      digitalWrite(2, LOW);\n    }\n  }\n}`,
+        ai: 'This project uses an ESP32 and a Bluetooth module so students can learn wireless communication and control hardware remotely.',
+        model: ['esp32', 'bluetooth', 'led']
+      }
+    };
+
+    function buildCustomProject(text) {
+      const input = (text || '').toLowerCase();
+      const detected = [];
+      if (input.includes('sensor') || input.includes('distance') || input.includes('ultrasonic')) detected.push('sensor');
+      if (input.includes('servo') || input.includes('motor') || input.includes('arm')) detected.push('servo');
+      if (input.includes('led') || input.includes('light') || input.includes('traffic')) detected.push('led');
+      if (input.includes('screen') || input.includes('display') || input.includes('lcd')) detected.push('screen');
+      if (input.includes('pump') || input.includes('water') || input.includes('plant')) detected.push('pump');
+      if (input.includes('buzzer') || input.includes('sound') || input.includes('alarm')) detected.push('buzzer');
+      if (input.includes('camera') || input.includes('vision')) detected.push('sensor');
+      if (input.includes('esp32') || input.includes('esp 32')) detected.push('esp32');
+      if (input.includes('bluetooth') || input.includes('ble') || input.includes('wireless')) detected.push('bluetooth');
+
+      const coreComponents = ['Arduino Uno - main control board'];
+      const extras = detected.length ? detected : ['sensor', 'led'];
+      const componentNames = {
+        sensor: 'Sensor module - detects changes in the environment',
+        servo: 'Servo motor - moves parts smoothly',
+        led: 'LED - gives a visual output',
+        screen: 'Display screen - shows information',
+        pump: 'Water pump - moves liquid',
+        buzzer: 'Buzzer - gives sound feedback',
+        esp32: 'ESP32 DevKit - wireless control board',
+        bluetooth: 'Bluetooth module - wireless communication'
+      };
+
+      extras.forEach(item => {
+        if (!coreComponents.includes(componentNames[item])) {
+          coreComponents.push(componentNames[item]);
+        }
+      });
+
+      if (extras.includes('esp32')) {
+        coreComponents[0] = 'ESP32 DevKit - main wireless control board';
+      }
+
+      const titleWords = input.replace(/i want to|make|build|create|a|an|the|project|please|for|with|and/gi, ' ').trim();
+      const title = titleWords ? `Custom Project: ${titleWords}` : 'Custom Arduino Project';
+      const intro = `This idea uses simple Arduino or ESP32 parts so a student can understand the circuit, connect each component, and test the project step by step.`;
+      const connections = extras.includes('esp32') ? [
+        'ESP32 3.3V -> breadboard positive rail',
+        'ESP32 GND -> breadboard negative rail',
+        'Bluetooth module TX -> ESP32 RX2',
+        'Bluetooth module RX -> ESP32 TX2',
+        'Sensor or input device -> ESP32 input pin such as GPIO 34 or GPIO 35',
+        'Output device -> ESP32 output pin such as GPIO 2 or GPIO 4'
+      ] : [
+        'Arduino 5V -> breadboard positive rail',
+        'Arduino GND -> breadboard negative rail',
+        'Sensor or input device -> Arduino input pin such as A0 or D9',
+        'Output device -> Arduino output pin such as D8 or D13',
+        'Power device like a pump -> relay or transistor driver'
+      ];
+      const wires = extras.includes('esp32') ? [
+        'Male-to-male jumper wires - for the ESP32 and breadboard',
+        'Male-to-female jumper wires - for the Bluetooth module',
+        '220Ω resistor - for LED output parts'
+      ] : [
+        'Male-to-male jumper wires - for Arduino and breadboard links',
+        'Female-to-male jumper wires - for sensor module headers',
+        '220Ω resistor - for LED output parts'
+      ];
+      const steps = [
+        'Step 1: Place the Arduino board and breadboard on the desk.',
+        'Step 2: Connect the main controller to the power and ground rails.',
+        'Step 3: Add the main sensor or actuator from your idea to the correct pin.',
+        'Step 4: Connect the output part such as an LED, screen, or pump.',
+        'Step 5: Upload the test code and check the result.'
+      ];
+      const guide = [
+        'Use the correct pin numbers from your code and wiring plan.',
+        'Keep the power rails clean so the circuit is easy to follow.',
+        'Double-check that the sensor and output parts are connected to the right side.',
+        'Test the circuit slowly and fix one connection at a time.'
+      ];
+      const ai = `I can help you build this idea with simple Arduino parts. Start with the main controller, then add the sensor, movement, or output device you described.`;
+      const code = `void setup() {\n  pinMode(13, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(500);\n  digitalWrite(13, LOW);\n  delay(500);\n}`;
+      const modelItems = extras.slice(0, 4);
+      return { title, intro, components: coreComponents, connections, wires, steps, guide, code, ai, model: modelItems };
+    }
+
+    function renderLesson(project) {
+      const result = document.getElementById('lessonResult');
+      const aiReply = document.getElementById('aiReply');
+      result.innerHTML = `
+        <span class="pill">AI lesson</span>
+        <h2>${project.title}</h2>
+        <p class="tiny">${project.intro}</p>
+        <h3>What components you need</h3>
+        <ul>${project.components.map(item => `<li>${item}</li>`).join('')}</ul>
+        <h3>How to wire it</h3>
+        <ul>${(project.connections || []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <h3>Wire types and parts</h3>
+        <ul>${(project.wires || []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <h3>Step-by-step build guide</h3>
+        <ul>${project.steps.map(step => `<li>${step}</li>`).join('')}</ul>
+        <h3>Full project guide</h3>
+        <ul>${(project.guide || []).map(step => `<li>${step}</li>`).join('')}</ul>
+        <h3>Code to upload</h3>
+        <pre style="white-space: pre-wrap; background: #0b1728; padding: 12px; border-radius: 12px; color: #cbd5e1; overflow-x: auto;">${project.code || ''}</pre>
+      `;
+      aiReply.innerHTML = `<strong>LAB.AI says:</strong> ${project.ai}`;
+      renderModel(project);
+    }
+
+    function createComponentSvg(item) {
+      const palette = {
+        sensor: ['#f59e0b', '#fb923c'],
+        servo: ['#8b5cf6', '#a78bfa'],
+        led: ['#ef4444', '#fb923c'],
+        pump: ['#22d3ee', '#0ea5e9'],
+        screen: ['#fef3c7', '#fde68a'],
+        esp32: ['#06b6d4', '#0f766e'],
+        bluetooth: ['#8b5cf6', '#4c1d95'],
+        buzzer: ['#cbd5e1', '#64748b'],
+        'light-red': ['#ef4444', '#f87171'],
+        'light-yellow': ['#facc15', '#fde68a'],
+        'light-green': ['#22c55e', '#86efac']
+      };
+      const [primary, secondary] = palette[item] || ['#8b5cf6', '#4c1d95'];
+      const art = {
+        sensor: `<g filter="url(#shadow)">
+          <path d="M16 28c0-8 6-14 14-14h28c8 0 14 6 14 14v24c0 8-6 14-14 14H30c-8 0-14-6-14-14z" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <path d="M24 24h18v10H24z" fill="${primary}"/>
+          <path d="M46 24h18v10H46z" fill="${secondary}"/>
+          <rect x="24" y="40" width="40" height="10" rx="5" fill="#0f172a" opacity="0.75"/>
+          <circle cx="34" cy="45" r="8" fill="#fef3c7"/>
+          <circle cx="56" cy="45" r="8" fill="#fef3c7"/>
+          <rect x="28" y="58" width="32" height="6" rx="3" fill="#64748b"/>
+        </g>`,
+        servo: `<g filter="url(#shadow)">
+          <rect x="16" y="20" width="56" height="44" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <rect x="26" y="12" width="36" height="10" rx="4" fill="#64748b"/>
+          <circle cx="44" cy="42" r="14" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+          <circle cx="44" cy="42" r="8" fill="${primary}"/>
+          <path d="M32 62h24" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+        </g>`,
+        led: `<g filter="url(#shadow)">
+          <rect x="16" y="22" width="56" height="42" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <circle cx="44" cy="44" r="14" fill="${primary}" stroke="#fff7ed" stroke-width="2"/>
+          <circle cx="44" cy="44" r="8" fill="#fef3c7" opacity="0.9"/>
+          <rect x="32" y="12" width="8" height="12" rx="3" fill="#64748b"/>
+          <rect x="48" y="12" width="8" height="12" rx="3" fill="#64748b"/>
+        </g>`,
+        pump: `<g filter="url(#shadow)">
+          <rect x="22" y="18" width="44" height="48" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <rect x="28" y="24" width="32" height="28" rx="8" fill="${primary}"/>
+          <rect x="24" y="12" width="40" height="8" rx="4" fill="#64748b"/>
+          <rect x="24" y="60" width="40" height="6" rx="3" fill="#64748b"/>
+          <path d="M34 34h20" stroke="#fef3c7" stroke-width="3" stroke-linecap="round"/>
+        </g>`,
+        screen: `<g filter="url(#shadow)">
+          <rect x="16" y="20" width="56" height="44" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <rect x="24" y="28" width="40" height="28" rx="8" fill="${primary}"/>
+          <rect x="30" y="34" width="28" height="6" rx="3" fill="#0f172a"/>
+          <rect x="30" y="44" width="20" height="6" rx="3" fill="#0f172a"/>
+          <rect x="30" y="54" width="16" height="4" rx="2" fill="#0f172a"/>
+        </g>`,
+        esp32: `<g filter="url(#shadow)">
+          <rect x="16" y="20" width="56" height="44" rx="12" fill="url(#panel)" stroke="#8b5cf6" stroke-width="2"/>
+          <rect x="24" y="28" width="16" height="16" rx="4" fill="${primary}"/>
+          <rect x="44" y="28" width="16" height="16" rx="4" fill="${secondary}"/>
+          <rect x="64" y="28" width="8" height="16" rx="3" fill="#94a3b8"/>
+          <rect x="24" y="48" width="40" height="6" rx="3" fill="#64748b"/>
+        </g>`,
+        bluetooth: `<g filter="url(#shadow)">
+          <rect x="16" y="20" width="56" height="44" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <circle cx="44" cy="42" r="14" fill="${primary}"/>
+          <path d="M35 34l12 8-8 6V28l8 6-12 8" fill="${secondary}"/>
+          <rect x="30" y="12" width="28" height="8" rx="4" fill="#64748b"/>
+        </g>`,
+        buzzer: `<g filter="url(#shadow)">
+          <rect x="22" y="18" width="44" height="48" rx="12" fill="url(#panel)" stroke="#f8fafc" stroke-width="2"/>
+          <rect x="30" y="26" width="28" height="28" rx="10" fill="${primary}"/>
+          <circle cx="44" cy="40" r="10" fill="#fef3c7"/>
+          <rect x="32" y="58" width="24" height="6" rx="3" fill="#64748b"/>
+        </g>`,
+        'light-red': `<g filter="url(#shadow)"><circle cx="44" cy="44" r="18" fill="${primary}" stroke="#fff7ed" stroke-width="2"/><circle cx="44" cy="44" r="10" fill="#fff7ed" opacity="0.9"/></g>`,
+        'light-yellow': `<g filter="url(#shadow)"><circle cx="44" cy="44" r="18" fill="${primary}" stroke="#fff7ed" stroke-width="2"/><circle cx="44" cy="44" r="10" fill="#fff7ed" opacity="0.9"/></g>`,
+        'light-green': `<g filter="url(#shadow)"><circle cx="44" cy="44" r="18" fill="${primary}" stroke="#fff7ed" stroke-width="2"/><circle cx="44" cy="44" r="10" fill="#fff7ed" opacity="0.9"/></g>`
+      };
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 88 88">
+        <defs>
+          <linearGradient id="panel" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f8fafc"/>
+            <stop offset="100%" stop-color="#94a3b8"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#020617" flood-opacity="0.45"/>
+          </filter>
+        </defs>
+        <rect width="88" height="88" rx="18" fill="#0f172a"/>
+        <rect x="6" y="6" width="76" height="76" rx="14" fill="#111827" stroke="#334155" stroke-width="2"/>
+        ${art[item] || art.sensor}
+      </svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function renderModel(project) {
+      const scene = document.getElementById('modelScene');
+      const legend = document.getElementById('modelLegend');
+      const status = document.getElementById('modelStatus');
+      const help = document.getElementById('connectionHelp');
+      const labels = {
+        sensor: 'Sensor',
+        servo: 'Servo',
+        led: 'LED',
+        pump: 'Pump',
+        screen: 'Display',
+        esp32: 'ESP32',
+        bluetooth: 'Bluetooth',
+        buzzer: 'Buzzer',
+        'light-red': 'Red LED',
+        'light-yellow': 'Yellow LED',
+        'light-green': 'Green LED'
+      };
+      const modelItems = (project.model || []).filter(item => item !== 'board');
+      const base = `<div class="board">
+        <div class="label top">Arduino Uno</div>
+        <div class="chip"></div>
+        <div class="usb"></div>
+        <div class="label bottom">Input / Output</div>
+        <div class="pin-row left"><div class="pin"></div><div class="pin"></div><div class="pin"></div><div class="pin"></div><div class="pin"></div></div>
+        <div class="pin-row right"><div class="pin"></div><div class="pin"></div><div class="pin"></div><div class="pin"></div><div class="pin"></div></div>
+      </div>
+      <div class="component-tray"></div>
+      <div class="rail gnd"></div>
+      <div class="rail vcc"></div>
+      <div class="breadboard"></div>
+      <div class="wire red" style="left: 32px; top: 184px; width: 84px; transform: rotate(12deg);"></div>
+      <div class="wire blue" style="left: 160px; top: 178px; width: 88px; transform: rotate(-12deg);"></div>
+      <div class="wire green" style="left: 112px; top: 210px; width: 72px; transform: rotate(0deg);"></div>
+      <svg id="connectionLayer" class="connection-layer"></svg>`;
+      const extras = modelItems.map(item => {
+        const label = labels[item] || item;
+        const imageSrc = createComponentSvg(item, label);
+        return `<div class="model-item component-node" data-item="${item}" style="width: 82px; height: 82px;"><img src="${imageSrc}" alt="${label}"><span>${label}</span></div>`;
+      }).join('');
+      scene.innerHTML = base + extras;
+      scene.classList.remove('running');
+
+      legend.innerHTML = modelItems.map(item => `<span class="legend-pill">${labels[item] || item}</span>`).join('');
+      status.textContent = 'Drag the parts onto the board and connect them.';
+      help.innerHTML = buildConnectionHelp(project, modelItems, labels);
+
+      setupInteractiveModel(scene);
+      placeComponents(scene, modelItems);
+      updateConnections(scene);
+    }
+
+    function buildConnectionHelp(project, modelItems, labels) {
+      const connectionHints = {
+        sensor: ['Connect VCC to 5V', 'Connect GND to GND', 'Connect signal pin to an analog or digital input pin'],
+        servo: ['Connect VCC to 5V', 'Connect GND to GND', 'Connect the signal wire to a PWM pin'],
+        led: ['Connect the long leg to a digital pin through a resistor', 'Connect the short leg to GND'],
+        pump: ['Connect the positive wire to a relay or transistor driver', 'Connect the negative wire to the power supply negative'],
+        screen: ['Connect VCC to 5V', 'Connect GND to GND', 'Connect data pins as shown in the project guide'],
+        esp32: ['Connect 3.3V to the power rail', 'Connect GND to the ground rail', 'Use the correct GPIO pins for your code'],
+        bluetooth: ['Connect VCC to 3.3V', 'Connect GND to GND', 'Connect TX and RX to the correct UART pins'],
+        buzzer: ['Connect the positive pin to a digital pin', 'Connect the negative pin to GND'],
+        'light-red': ['Connect the long leg to a digital pin through a resistor', 'Connect the short leg to GND'],
+        'light-yellow': ['Connect the long leg to a digital pin through a resistor', 'Connect the short leg to GND'],
+        'light-green': ['Connect the long leg to a digital pin through a resistor', 'Connect the short leg to GND']
+      };
+
+      const items = modelItems.length ? modelItems : ['sensor'];
+      const lines = items.slice(0, 4).map(item => {
+        const label = labels[item] || item;
+        const hints = connectionHints[item] || connectionHints.sensor;
+        return `<li><strong>${label}</strong>: ${hints.join('; ')}.</li>`;
+      }).join('');
+
+      return `<h4>How the AI says to connect it</h4><ul>${lines}</ul>`;
+    }
+
+    function setupInteractiveModel(scene) {
+      if (scene.dataset.bound === 'true') {
+        return;
+      }
+      scene.dataset.bound = 'true';
+
+      let activeNode = null;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      scene.addEventListener('pointerdown', (event) => {
+        const node = event.target.closest('.component-node');
+        if (!node) return;
+        activeNode = node;
+        const rect = node.getBoundingClientRect();
+        const sceneRect = scene.getBoundingClientRect();
+        offsetX = event.clientX - rect.left;
+        offsetY = event.clientY - rect.top;
+        node.classList.add('dragging');
+        event.preventDefault();
+      });
+
+      scene.addEventListener('pointermove', (event) => {
+        if (!activeNode) return;
+        const sceneRect = scene.getBoundingClientRect();
+        const x = event.clientX - sceneRect.left - offsetX;
+        const y = event.clientY - sceneRect.top - offsetY;
+        activeNode.style.left = `${Math.max(10, Math.min(sceneRect.width - 60, x))}px`;
+        activeNode.style.top = `${Math.max(10, Math.min(sceneRect.height - 60, y))}px`;
+        updateConnections(scene);
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (!activeNode) return;
+        const board = scene.querySelector('.board');
+        const boardRect = board.getBoundingClientRect();
+        const nodeRect = activeNode.getBoundingClientRect();
+        const centerX = nodeRect.left + nodeRect.width / 2;
+        const centerY = nodeRect.top + nodeRect.height / 2;
+        const boardCenterX = boardRect.left + boardRect.width / 2;
+        const boardCenterY = boardRect.top + boardRect.height / 2;
+        const connected = Math.abs(centerX - boardCenterX) < 120 && Math.abs(centerY - boardCenterY) < 90;
+        activeNode.classList.toggle('connected', connected);
+        if (connected) {
+          const sceneRect = scene.getBoundingClientRect();
+          const snapX = boardCenterX - sceneRect.left - activeNode.offsetWidth / 2 - 8;
+          const snapY = boardCenterY - sceneRect.top - activeNode.offsetHeight / 2 - 8;
+          activeNode.style.left = `${Math.max(10, Math.min(sceneRect.width - 60, snapX))}px`;
+          activeNode.style.top = `${Math.max(10, Math.min(sceneRect.height - 60, snapY))}px`;
+        }
+        activeNode.classList.remove('dragging');
+        activeNode = null;
+        updateConnections(scene);
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        placeComponents(scene, Array.from(scene.querySelectorAll('.component-node')).map(node => node.dataset.item));
+        scene.querySelectorAll('.component-node').forEach(node => node.classList.remove('connected'));
+        updateConnections(scene);
+        document.getElementById('modelStatus').textContent = 'Layout reset. Drag the parts onto the board again.';
+      });
+
+      document.getElementById('testBtn').addEventListener('click', () => {
+        const connectedCount = scene.querySelectorAll('.component-node.connected').length;
+        const totalCount = scene.querySelectorAll('.component-node').length;
+        const status = document.getElementById('modelStatus');
+        status.textContent = connectedCount === totalCount
+          ? 'Great! All parts are connected to the board.'
+          : `Only ${connectedCount} of ${totalCount} parts are connected yet.`;
+      });
+    }
+
+    function placeComponents(scene, modelItems) {
+      const positions = {
+        sensor: { x: 80, y: 90 },
+        servo: { x: 280, y: 90 },
+        led: { x: 300, y: 170 },
+        pump: { x: 90, y: 180 },
+        screen: { x: 295, y: 120 },
+        esp32: { x: 150, y: 115 },
+        bluetooth: { x: 275, y: 90 },
+        buzzer: { x: 80, y: 150 },
+        'light-red': { x: 95, y: 170 },
+        'light-yellow': { x: 170, y: 170 },
+        'light-green': { x: 245, y: 170 }
+      };
+
+      scene.querySelectorAll('.component-node').forEach((node, index) => {
+        const item = node.dataset.item;
+        const pos = positions[item] || { x: 120 + index * 40, y: 100 + index * 20 };
+        node.style.left = `${pos.x}px`;
+        node.style.top = `${pos.y}px`;
+      });
+    }
+
+    function updateConnections(scene) {
+      const layer = scene.querySelector('#connectionLayer');
+      if (!layer) return;
+      const board = scene.querySelector('.board');
+      if (!board) return;
+      const boardRect = board.getBoundingClientRect();
+      const sceneRect = scene.getBoundingClientRect();
+      const boardCenterX = boardRect.left - sceneRect.left + boardRect.width / 2;
+      const boardCenterY = boardRect.top - sceneRect.top + boardRect.height / 2;
+      const nodes = Array.from(scene.querySelectorAll('.component-node.connected'));
+      const lines = nodes.map(node => {
+        const rect = node.getBoundingClientRect();
+        const x1 = rect.left - sceneRect.left + rect.width / 2;
+        const y1 = rect.top - sceneRect.top + rect.height / 2;
+        const controlX = x1 + (boardCenterX - x1) / 2;
+        const controlY = y1 + (boardCenterY - y1) / 2 - 30;
+        return `
+          <path d="M ${x1} ${y1} C ${controlX} ${y1}, ${controlX} ${boardCenterY}, ${boardCenterX} ${boardCenterY}" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.95" />
+          <circle cx="${x1}" cy="${y1}" r="4" fill="#fef3c7" stroke="#92400e" stroke-width="2" />
+          <circle cx="${boardCenterX}" cy="${boardCenterY}" r="4" fill="#fef3c7" stroke="#92400e" stroke-width="2" />
+        `;
+      }).join('');
+      layer.innerHTML = lines;
+    }
+
+    function resolveProject(input) {
+      const text = (input || '').toLowerCase();
+      if (text.includes('radar')) return projects.radar;
+      if (text.includes('plant') || text.includes('garden') || text.includes('soil')) return projects['smart plant'];
+      if (text.includes('traffic') || text.includes('signal') || text.includes('light')) return projects['traffic light'];
+      if (text.includes('temp') || text.includes('temperature')) return projects['temperature monitor'];
+      if (text.includes('robot') || text.includes('arm') || text.includes('servo')) return projects['robot arm'];
+      if (text.includes('esp32') || text.includes('bluetooth') || text.includes('ble') || text.includes('wireless')) return projects['esp32 bluetooth'];
+      return buildCustomProject(input);
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const value = document.getElementById('projectInput').value.trim();
+      renderLesson(resolveProject(value));
+    });
+
+    document.getElementById('startBtn')?.addEventListener('click', () => {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('appShell').classList.remove('hidden');
+      document.getElementById('projectInput').focus();
+    });
+
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const project = projects[btn.dataset.project] || projects.radar;
+        renderLesson(project);
+      });
+    });
+
+    document.getElementById('runBtn').addEventListener('click', () => {
+      const scene = document.getElementById('modelScene');
+      scene.classList.toggle('running');
+    });
+
+    renderLesson(projects.radar);
+  </script>
+</body>
+</html>
